@@ -1,0 +1,15 @@
+name: GramersRankupCore
+version: 1.0
+main: org.kcsup.gramersrankupcore.Main
+api-version: 1.8.8
+description: The core plugin for the Gramers Rankup server.
+commands:
+  practice:
+    description: The practice command for Rankups.
+    aliases: [prac]
+  unpractice:
+    description: The unpractice command for Rankups.
+    aliases: [unprac]
+  rank:
+    description: The command for setting a player's Rank.
+    aliases: [sr]
