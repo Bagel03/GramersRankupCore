@@ -1,5 +1,6 @@
 package org.kcsup.gramersrankupcore.util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.kcsup.gramersrankupcore.Main;
@@ -45,6 +46,8 @@ public class RankManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        player.setPlayerListName(rank.getPrefix() + " " + ChatColor.WHITE + player.getName());
     }
 
     public Ranks getRank(Player player) {

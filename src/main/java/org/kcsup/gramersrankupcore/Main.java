@@ -28,21 +28,6 @@ public final class Main extends JavaPlugin {
         rankManager = new RankManager(this);
 
         loadCommands();
-
-        // Tab Logic
-        Scoreboard scoreboard = getServer().getScoreboardManager().getMainScoreboard();
-        for(Ranks ranks : Ranks.values()) {
-            Team team = scoreboard.getTeam(ranks.name());
-            if(team == null) {
-                team = scoreboard.registerNewTeam(ranks.name());
-            }
-
-            team.setPrefix(ranks.getPrefix());
-        }
-
-        for(Player online : Bukkit.getOnlinePlayers()) {
-
-        }
     }
 
     public RankManager getRankManager() {
