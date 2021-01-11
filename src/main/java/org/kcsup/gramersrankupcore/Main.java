@@ -8,14 +8,21 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.kcsup.gramersrankupcore.commands.PracticeCommand;
 import org.kcsup.gramersrankupcore.commands.RankCommand;
+import org.kcsup.gramersrankupcore.commands.SetSignCommand;
 import org.kcsup.gramersrankupcore.commands.UnPracticeCommand;
 import org.kcsup.gramersrankupcore.ranks.Ranks;
 import org.kcsup.gramersrankupcore.util.RankManager;
 import org.kcsup.gramersrankupcore.util.PracticeManager;
+import org.kcsup.gramersrankupcore.util.SignManager;
+import org.kcsup.gramersrankupcore.util.TeamManager;
 
 public final class Main extends JavaPlugin {
 
     private RankManager rankManager;
+    private TeamManager teamManager;
+    private SignManager signManager;
+
+    public Scoreboard scoreboard = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
 
     @Override
     public void onEnable() {
@@ -26,18 +33,26 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
 
         rankManager = new RankManager(this);
+        teamManager = new TeamManager(this);
+        signManager = new SignManager(this);
 
         loadCommands();
+
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            Ranks rank = rankManager.getRank(player);
+            player.setPlayerListName(rank.getPrefix() + " " + rank.getMiddleChatColor() + player.getName());
+        }
+
     }
 
-    public RankManager getRankManager() {
-        return rankManager;
-    }
+    public RankManager getRankManager() { return rankManager; }
+    public SignManager getSignManager() { return signManager; }
 
     private void loadCommands() {
         getCommand("practice").setExecutor(new PracticeCommand(this));
         getCommand("unpractice").setExecutor(new UnPracticeCommand(this));
         getCommand("rank").setExecutor(new RankCommand(this));
+        getCommand("setsign").setExecutor(new SetSignCommand(this));
     }
 
     @Override
