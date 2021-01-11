@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 public enum Ranks {
 
     I(ChatColor.translateAlternateColorCodes('&', "&9[&2I&9]"), "A", ChatColor.DARK_GREEN),
-    II(ChatColor.translateAlternateColorCodes('&', "&c[&6II&c]"), "9", ChatColor.GOLD),
+    II(ChatColor.translateAlternateColorCodes('&', "&a[&6II&a]"), "9", ChatColor.GOLD),
     III(ChatColor.translateAlternateColorCodes('&', "&d[&5III&d]"), "8", ChatColor.DARK_PURPLE),
     IV(ChatColor.translateAlternateColorCodes('&', "&3«[&BIV&3]»"), "7", ChatColor.AQUA),
     V(ChatColor.translateAlternateColorCodes('&', "&e«[&7V&e]»"), "6", ChatColor.GRAY),

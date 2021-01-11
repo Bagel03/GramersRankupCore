@@ -1,5 +1,6 @@
 package org.kcsup.gramersrankupcore;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -49,13 +50,33 @@ public class ListenerClass implements Listener {
             Block block = e.getClickedBlock();
             if(block.getType() == Material.SIGN_POST ||
             block.getType() == Material.WALL_SIGN) {
+                Ranks rank = main.getRankManager().getRank(player);
+                if(main.getSignManager().rankLevelSignLocations.containsKey(rank)) {
+                    int rankIndex = ArrayUtils.indexOf(Ranks.values(), rank);
+                    Location rankLocation = main.getSignManager().rankLevelSignLocations.get(rank);
+                    if(block.getLocation().getWorld() == rankLocation.getWorld() &&
+                    block.getLocation().getX() == rankLocation.getX() &&
+                    block.getLocation().getY() == rankLocation.getY() &&
+                    block.getLocation().getZ() == rankLocation.getZ()) {
+                        Ranks nextRank = Ranks.values()[rankIndex + 1];
+                        player.teleport(main.getSignManager().rankSpawnLocations.get(nextRank));
+                        main.getRankManager().rankUp(player);
+                    } else {
+                        if(main.getSignManager().rankLevelSignLocations.containsValue(block.getLocation())) {
+                            player.sendMessage("pog");
+                            int locationIndex = ArrayUtils.indexOf(main.getSignManager().rankLevelSignLocations.values().toArray(),
+                                    block.getLocation());
+                            Ranks rankFromLocation = Ranks.values()[locationIndex];
+                            Ranks nextRankFromLocation = (Ranks) main.getSignManager().rankLevelSignLocations.keySet().toArray()[locationIndex + 1];
+                            if(main.getRankManager().isHigherRank(Ranks.III, Ranks.I)) {
+                                player.sendMessage("works");
+                                player.teleport(main.getSignManager().rankSpawnLocations.get(nextRankFromLocation));
+                            }
+                        }
+                    }
+                }
             }
         }
-    }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-
     }
 
     @EventHandler

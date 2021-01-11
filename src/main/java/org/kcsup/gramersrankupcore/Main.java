@@ -8,7 +8,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.kcsup.gramersrankupcore.commands.PracticeCommand;
 import org.kcsup.gramersrankupcore.commands.RankCommand;
-import org.kcsup.gramersrankupcore.commands.SetSignCommand;
 import org.kcsup.gramersrankupcore.commands.UnPracticeCommand;
 import org.kcsup.gramersrankupcore.ranks.Ranks;
 import org.kcsup.gramersrankupcore.util.RankManager;
@@ -52,7 +51,6 @@ public final class Main extends JavaPlugin {
         getCommand("practice").setExecutor(new PracticeCommand(this));
         getCommand("unpractice").setExecutor(new UnPracticeCommand(this));
         getCommand("rank").setExecutor(new RankCommand(this));
-        getCommand("setsign").setExecutor(new SetSignCommand(this));
     }
 
     @Override
@@ -62,5 +60,7 @@ public final class Main extends JavaPlugin {
         for(Player player : PracticeManager.practicingOriginalLocation.keySet()) {
             player.sendMessage(ChatColor.RED + "You were forced out of Practice Mode due to a reload.");
         }
+        signManager.rankLevelSignLocations.clear();
+        signManager.rankSpawnLocations.clear();
     }
 }

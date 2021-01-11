@@ -1,5 +1,7 @@
 package org.kcsup.gramersrankupcore.util;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -60,11 +62,29 @@ public class RankManager {
         team.addPlayer(player);
     }
 
+    public void rankUp(Player player) {
+        Ranks currentRank = getRank(player);
+        int indexForCurrentRank = ArrayUtils.indexOf(Ranks.values(), currentRank);
+        Ranks nextRank = Ranks.values()[indexForCurrentRank + 1];
+        setRank(player, nextRank);
+
+        for(Player online : Bukkit.getOnlinePlayers()) {
+            online.sendMessage(ChatColor.GREEN + player.getName() + "just Ranked Up to rank " + nextRank.getMiddleChatColor() + nextRank.name() + ChatColor.GREEN + "!");
+
+        }
+    }
+
     public Ranks getRank(Player player) {
         return Ranks.valueOf(yaml.getString("Players." + player.getUniqueId().toString()));
     }
     public Ranks getRank(UUID uuid) {
         return Ranks.valueOf(yaml.getString("Players." + uuid.toString()));
+    }
+
+    public boolean isHigherRank(Ranks rank1, Ranks rank2) {
+        int indexOfRank1 = ArrayUtils.indexOf(Ranks.values(), rank1);
+        int indexOfRank2 = ArrayUtils.indexOf(Ranks.values(), rank2);
+        return indexOfRank1 > indexOfRank2;
     }
 
 

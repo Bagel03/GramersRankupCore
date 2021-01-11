@@ -26,23 +26,26 @@ RankCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender.isOp()) {
             if(args.length == 2) {
-                if(Bukkit.getOfflinePlayer(args[0]).hasPlayedBefore()) {
-                    Player playerToModify = Bukkit.getOfflinePlayer(args[0]).getPlayer();
-                    for(Ranks rank : Ranks.values()) {
-                        if(rank.name().equals(args[1].toUpperCase())) {
-                            Ranks rankToChangeTo = Ranks.valueOf(args[1].toUpperCase());
-                            main.getRankManager().setRank(playerToModify, rankToChangeTo);
+                Player playerToModify = Bukkit.getOfflinePlayer(args[0]).getPlayer();
+                for(Ranks rank : Ranks.values()) {
+                    if(rank.name().equals(args[1].toUpperCase())) {
+                        Ranks rankToChangeTo = Ranks.valueOf(args[1].toUpperCase());
+                        main.getRankManager().setRank(playerToModify, rankToChangeTo);
 
-                            sender.sendMessage(ChatColor.GREEN + "Changed " + playerToModify.getName() + "'s " +
-                                    "rank to " + rankToChangeTo.name() + "!");
-                            if(playerToModify.isOnline()) {
-                                playerToModify.sendMessage(ChatColor.GREEN + sender.getName() + " changed your rank to "
-                                        + rankToChangeTo.name() + ".");
-                            }
+                        sender.sendMessage(ChatColor.GREEN + "Changed " + playerToModify.getName() + "'s " +
+                                "rank to " + rankToChangeTo.name() + "!");
+                        if(playerToModify.isOnline()) {
+                            playerToModify.sendMessage(ChatColor.GREEN + sender.getName() + " changed your rank to "
+                                    + rankToChangeTo.name() + ".");
                         }
                     }
-                } else {
-                    sender.sendMessage(ChatColor.RED + "This player hasn't join the server!");
+                }
+            } else if(args.length == 1) {
+                if(args[0].equalsIgnoreCase("list")) {
+                    sender.sendMessage("Current Ranks:");
+                    for(Ranks rank : Ranks.values()) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',rank.name() + " ( " + rank.getPrefix() + " &f)"));
+                    }
                 }
             } else {
                 sender.sendMessage(ChatColor.RED + "Invalid usage! (/rank <player> <rank>)");
