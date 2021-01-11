@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -58,15 +59,23 @@ public class ListenerClass implements Listener {
                                 signLocation.getY() == block.getLocation().getY() &&
                                 signLocation.getZ() == block.getLocation().getZ()) {
                             if (main.getRankManager().getRank(player) == rank) {
-                                int rankIndex = ArrayUtils.indexOf(Ranks.values(), rank);
-                                Ranks nextRank = Ranks.values()[rankIndex + 1];
-                                player.teleport(nextRank.getSpawn());
-                                main.getRankManager().rankUp(player);
-                            } else {
-                                if (main.getRankManager().isHigherRank(main.getRankManager().getRank(player), rank)) {
+                                if(!PracticeManager.isPracticing(player)) {
                                     int rankIndex = ArrayUtils.indexOf(Ranks.values(), rank);
                                     Ranks nextRank = Ranks.values()[rankIndex + 1];
                                     player.teleport(nextRank.getSpawn());
+                                    main.getRankManager().rankUp(player);
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "You can't be in practice mode to complete a rank!");
+                                }
+                            } else {
+                                if (main.getRankManager().isHigherRank(main.getRankManager().getRank(player), rank)) {
+                                    if(!PracticeManager.isPracticing(player)) {
+                                        int rankIndex = ArrayUtils.indexOf(Ranks.values(), rank);
+                                        Ranks nextRank = Ranks.values()[rankIndex + 1];
+                                        player.teleport(nextRank.getSpawn());
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "You can't be in practice mode to complete a rank!");
+                                    }
                                 } else {
                                     player.sendMessage(ChatColor.RED + "You are not at the required Rank to Rank Up from this Rank!");
                                 }
@@ -141,6 +150,11 @@ public class ListenerClass implements Listener {
         e.getBlock().getType() == Material.STATIONARY_WATER) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onBlockSpread(BlockSpreadEvent e) {
+
     }
 
 }

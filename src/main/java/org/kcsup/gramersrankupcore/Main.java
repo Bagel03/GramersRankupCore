@@ -2,17 +2,15 @@ package org.kcsup.gramersrankupcore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 import org.kcsup.gramersrankupcore.commands.PracticeCommand;
 import org.kcsup.gramersrankupcore.commands.RankCommand;
 import org.kcsup.gramersrankupcore.commands.UnPracticeCommand;
 import org.kcsup.gramersrankupcore.ranks.Ranks;
-import org.kcsup.gramersrankupcore.util.RankManager;
 import org.kcsup.gramersrankupcore.util.PracticeManager;
+import org.kcsup.gramersrankupcore.util.RankManager;
 import org.kcsup.gramersrankupcore.util.SignManager;
 import org.kcsup.gramersrankupcore.util.TeamManager;
 
