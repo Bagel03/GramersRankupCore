@@ -69,8 +69,7 @@ public class RankManager {
         setRank(player, nextRank);
 
         for(Player online : Bukkit.getOnlinePlayers()) {
-            online.sendMessage(ChatColor.GREEN + player.getName() + "just Ranked Up to rank " + nextRank.getMiddleChatColor() + nextRank.name() + ChatColor.GREEN + "!");
-
+            online.sendMessage(ChatColor.GREEN + player.getName() + " just Ranked Up to rank " + nextRank.getMiddleChatColor() + nextRank.name() + ChatColor.GREEN + "!");
         }
     }
 

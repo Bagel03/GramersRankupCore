@@ -46,31 +46,30 @@ public class ListenerClass implements Listener {
             }
         }
 
-        if(e.getClickedBlock() != null) {
+        if (e.getClickedBlock() != null) {
             Block block = e.getClickedBlock();
-            if(block.getType() == Material.SIGN_POST ||
-            block.getType() == Material.WALL_SIGN) {
-                Ranks rank = main.getRankManager().getRank(player);
-                if(main.getSignManager().rankLevelSignLocations.containsKey(rank)) {
-                    int rankIndex = ArrayUtils.indexOf(Ranks.values(), rank);
-                    Location rankLocation = main.getSignManager().rankLevelSignLocations.get(rank);
-                    if(block.getLocation().getWorld() == rankLocation.getWorld() &&
-                    block.getLocation().getX() == rankLocation.getX() &&
-                    block.getLocation().getY() == rankLocation.getY() &&
-                    block.getLocation().getZ() == rankLocation.getZ()) {
-                        Ranks nextRank = Ranks.values()[rankIndex + 1];
-                        player.teleport(main.getSignManager().rankSpawnLocations.get(nextRank));
-                        main.getRankManager().rankUp(player);
-                    } else {
-                        if(main.getSignManager().rankLevelSignLocations.containsValue(block.getLocation())) {
-                            player.sendMessage("pog");
-                            int locationIndex = ArrayUtils.indexOf(main.getSignManager().rankLevelSignLocations.values().toArray(),
-                                    block.getLocation());
-                            Ranks rankFromLocation = Ranks.values()[locationIndex];
-                            Ranks nextRankFromLocation = (Ranks) main.getSignManager().rankLevelSignLocations.keySet().toArray()[locationIndex + 1];
-                            if(main.getRankManager().isHigherRank(Ranks.III, Ranks.I)) {
-                                player.sendMessage("works");
-                                player.teleport(main.getSignManager().rankSpawnLocations.get(nextRankFromLocation));
+            if (block.getType() == Material.SIGN_POST ||
+                    block.getType() == Material.WALL_SIGN) {
+                for (Ranks rank : Ranks.values()) {
+                    Location signLocation = rank.getRankUpSignLoc();
+                    if(main.getConfig().contains("Ranks." + rank.name())) {
+                        if (signLocation.getWorld() == block.getLocation().getWorld() &&
+                                signLocation.getX() == block.getLocation().getX() &&
+                                signLocation.getY() == block.getLocation().getY() &&
+                                signLocation.getZ() == block.getLocation().getZ()) {
+                            if (main.getRankManager().getRank(player) == rank) {
+                                int rankIndex = ArrayUtils.indexOf(Ranks.values(), rank);
+                                Ranks nextRank = Ranks.values()[rankIndex + 1];
+                                player.teleport(nextRank.getSpawn());
+                                main.getRankManager().rankUp(player);
+                            } else {
+                                if (main.getRankManager().isHigherRank(main.getRankManager().getRank(player), rank)) {
+                                    int rankIndex = ArrayUtils.indexOf(Ranks.values(), rank);
+                                    Ranks nextRank = Ranks.values()[rankIndex + 1];
+                                    player.teleport(nextRank.getSpawn());
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "You are not at the required Rank to Rank Up from this Rank!");
+                                }
                             }
                         }
                     }
