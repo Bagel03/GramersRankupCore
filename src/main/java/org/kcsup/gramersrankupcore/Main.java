@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
+import org.kcsup.gramersrankupcore.commands.LobbyCommand;
 import org.kcsup.gramersrankupcore.commands.PracticeCommand;
 import org.kcsup.gramersrankupcore.commands.RankCommand;
 import org.kcsup.gramersrankupcore.commands.UnPracticeCommand;
@@ -50,6 +51,8 @@ public final class Main extends JavaPlugin {
         getCommand("practice").setExecutor(new PracticeCommand(this));
         getCommand("unpractice").setExecutor(new UnPracticeCommand(this));
         getCommand("rank").setExecutor(new RankCommand(this));
+
+        getCommand("lobby").setExecutor(new LobbyCommand(this));
     }
 
     @Override

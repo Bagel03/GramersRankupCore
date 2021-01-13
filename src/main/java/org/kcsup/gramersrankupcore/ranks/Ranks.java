@@ -20,7 +20,6 @@ public enum Ranks {
     X(ChatColor.translateAlternateColorCodes('&', "&0««&l[&f&lX&0&l]&0»»"), "1", ChatColor.WHITE),
     XI(ChatColor.translateAlternateColorCodes('&', "&e««&6&l[&c&lXI&6&l]&e»»"), "0", ChatColor.RED);
 
-    private Main main;
     private String prefix;
     private String teamName;
     private ChatColor middleChatColor;

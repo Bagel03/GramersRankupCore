@@ -13,6 +13,6 @@ commands:
   rank:
     description: The command for setting a player's Rank.
     aliases: [sr]
-  setsign:
-    description: The command for setting the Rankup signs at a certain location.
-    aliases: [ss]
+  lobby:
+    description: The command for warping to the different lobbies on the server.
+    aliases: [l]

@@ -1,6 +1,7 @@
 package org.kcsup.gramersrankupcore;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -10,12 +11,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.kcsup.gramersrankupcore.ranks.Ranks;
 import org.kcsup.gramersrankupcore.util.PracticeManager;
 
@@ -51,8 +51,10 @@ public class ListenerClass implements Listener {
             Block block = e.getClickedBlock();
             if (block.getType() == Material.SIGN_POST ||
                     block.getType() == Material.WALL_SIGN) {
+
                 for (Ranks rank : Ranks.values()) {
                     Location signLocation = rank.getRankUpSignLoc();
+                    Location lobbyRankSignLocation = rank.getRankUpLobbyLoc();
                     if(main.getConfig().contains("Ranks." + rank.name())) {
                         if (signLocation.getWorld() == block.getLocation().getWorld() &&
                                 signLocation.getX() == block.getLocation().getX() &&
@@ -82,17 +84,83 @@ public class ListenerClass implements Listener {
                             }
                         }
                     }
+
+                    if(main.getConfig().contains("Lobbies.RankUpLobby.Signs." + rank.name())) {
+                        if(lobbyRankSignLocation.getWorld() == block.getLocation().getWorld() &&
+                                lobbyRankSignLocation.getX() == block.getLocation().getX() &&
+                                lobbyRankSignLocation.getY() == block.getLocation().getY() &&
+                                lobbyRankSignLocation.getZ() == block.getLocation().getZ()) {
+                            if (main.getRankManager().getRank(player) == rank) {
+                                if(!PracticeManager.isPracticing(player)) {
+                                    player.teleport(rank.getSpawn());
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "You can't be in practice mode while warping to a rank!");
+                                }
+                            } else {
+                                if (main.getRankManager().isHigherRank(main.getRankManager().getRank(player), rank)) {
+                                    if(!PracticeManager.isPracticing(player)) {
+                                        player.teleport(rank.getSpawn());
+                                    } else {
+                                        player.sendMessage(ChatColor.RED + "You can't be in practice mode while warping to a rank!");
+                                    }
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "You are not at the required Rank to Warp to this Rank!");
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for(String keys : main.getConfig().getKeys(true)) {
+                    if (keys.startsWith("Lobbies.Lobby.Signs") && StringUtils.countMatches(keys, ".") == 3) {
+                        Location signLocation = new Location(Bukkit.getWorld(main.getConfig().getString(keys + ".Sign.World")),
+                                main.getConfig().getDouble(keys + ".Sign.X"),
+                                main.getConfig().getDouble(keys + ".Sign.Y"),
+                                main.getConfig().getDouble(keys + ".Sign.Z"));
+                        if(signLocation.getWorld() == block.getLocation().getWorld() &&
+                                signLocation.getX() == block.getLocation().getX() &&
+                                signLocation.getY() == block.getLocation().getY() &&
+                                signLocation.getZ() == block.getLocation().getZ()) {
+                            Location toLocation = new Location(Bukkit.getWorld(main.getConfig().getString(keys + ".Spawn.World")),
+                                    main.getConfig().getDouble(keys + ".Spawn.X"),
+                                    main.getConfig().getDouble(keys + ".Spawn.Y"),
+                                    main.getConfig().getDouble(keys + ".Spawn.Z"),
+                                    main.getConfig().getInt(keys + "Spawn.Yaw"),
+                                    main.getConfig().getInt(keys + "Spawn.Pitch"));
+
+                            player.teleport(toLocation);
+                        }
+                    }
                 }
             }
         }
     }
 
     @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent e) {
-        Player player = (Player) e.getPlayer();
+    public void onInventoryClick(InventoryClickEvent e) {
+        Player player = (Player) e.getWhoClicked();
         if(PracticeManager.isPracticing(player)) {
-            e.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot open your inventory in Practice Mode!");
+            if(e.getCurrentItem().getType() == Material.SLIME_BALL &&
+            e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Reset")) {
+                ItemStack practiceExitItem = new ItemStack(Material.SLIME_BALL);
+                ItemMeta itemMeta = practiceExitItem.getItemMeta();
+                itemMeta.setDisplayName(ChatColor.GREEN + "Reset");
+                practiceExitItem.setItemMeta(itemMeta);
+
+                e.setCursor(null);
+                player.getInventory().setItem(8, practiceExitItem);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent e) {
+        Player player = e.getPlayer();
+        if(PracticeManager.isPracticing(player)) {
+            if(e.getItemDrop().getItemStack().getType() == Material.SLIME_BALL &&
+            e.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Reset")) {
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -134,7 +202,8 @@ public class ListenerClass implements Listener {
     public void onPlayerDamage(EntityDamageEvent e) {
         if(e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            if(e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            if(e.getCause() == EntityDamageEvent.DamageCause.FALL ||
+            e.getCause() == EntityDamageEvent.DamageCause.LAVA) {
                 e.setCancelled(true);
             } else if(e.getCause() == EntityDamageEvent.DamageCause.FIRE ||
                     e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
@@ -154,7 +223,17 @@ public class ListenerClass implements Listener {
 
     @EventHandler
     public void onBlockSpread(BlockSpreadEvent e) {
+        if(e.getSource().getType() == Material.VINE) {
+            e.setCancelled(true);
+        }
+    }
 
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+        if(PracticeManager.isPracticing(player)) {
+            PracticeManager.unPractice(player);
+        }
     }
 
 }

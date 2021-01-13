@@ -1,20 +1,39 @@
 # Config File
 Lobbies:
   Lobby:
-    RankUpLobby:
-      Sign:
-        World: world
-        X: -600
-        Y: 18
-        Z: -181
-      Spawn:
-        World: world
-        X: -681.5
-        Y: 4
-        Z: -217.5
-        Yaw: 0
-        Pitch: 0
+    Spawn:
+      World: world
+      X: -599.5
+      Y: 16
+      Z: -198.5
+      Yaw: 0
+      Pitch: 0
+    Signs:
+      RankUpLobby:
+        Sign:
+          World: world
+          X: -600
+          Y: 18
+          Z: -181
+          Line1: ''
+          Line2: 'Warp to:'
+          Line3: '&9Rank Up Lobby'
+          Line4: ''
+        Spawn:
+          World: world
+          X: -681.5
+          Y: 4
+          Z: -217.5
+          Yaw: 0
+          Pitch: 0
   RankUpLobby:
+    Spawn:
+      World: world
+      X: -681.5
+      Y: 4
+      Z: -217.5
+      Yaw: 0
+      Pitch: 0
     Signs:
       I:
         World: world
@@ -94,19 +113,19 @@ Ranks:
       X: -642
       Y: 22
       Z: -39
-#  III:
-#    Spawn:
-#      World:
-#      X:
-#      Y:
-#      Z:
-#      Yaw:
-#      Pitch:
-#    Sign:
-#      World:
-#      X:
-#      Y:
-#      Z:
+  III:
+    Spawn:
+      World: world
+      X: -770.5
+      Y: 3
+      Z: -44.5
+      Yaw: 145
+      Pitch: 0
+    Sign:
+      World: world
+      X: -758
+      Y: 27
+      Z: -50
 #  IV:
 #    Spawn:
 #      World:
